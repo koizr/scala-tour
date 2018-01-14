@@ -4,6 +4,7 @@ object FizzBuzz {
 
   /**
     * entry point
+    *
     * @param args
     */
   def main(args: Array[String]): Unit = {
@@ -16,18 +17,16 @@ object FizzBuzz {
     *
     * @param args
     */
-  def fizzbuzz(n: Int): Unit = { // println の戻り値は Unit
-    for {
-      i <- 1 to n
-    } {
-      i match {
-        case x if x % 15 == 0 => println("FizzBuzz")
-        case x if x % 3 == 0 => println("Fizz")
-        case x if x % 5 == 0 => println("Buzz")
-        case x => println(x)
-      }
+  def fizzbuzz(n: Int, i: Int = 1): Unit = { // println の戻り値は Unit
+    i match {
+      case x if x % 15 == 0 => println("FizzBuzz")
+      case x if x % 3 == 0 => println("Fizz")
+      case x if x % 5 == 0 => println("Buzz")
+      case x => println(x)
     }
     // scala では最後に実行された式が評価された値がブロックの値となる
+
+    if (i < n) fizzbuzz(n, i + 1)
   }
 }
 
