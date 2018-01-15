@@ -2,8 +2,10 @@ package example
 
 object PolygonMain {
   def main(args: Array[String]): Unit = {
-    val triangle = new Triangle(List(3, 4, 5))
+    val triangle = Polygon.fromEdges(List(3, 4, 5))
+    val square = Polygon.fromEdges(List(3, 13, 13, 14))
     println(triangle.area)
+    println(square.area)
   }
 }
 
@@ -18,6 +20,28 @@ abstract class Polygon(edges: List[Int]) {
   // メンバ。コンストラクタも兼ねる
   val n = edges.length // n 角形
   val area: Double // 面積
+}
+
+/**
+  * Polygon クラスのコンパニオンオブジェクト
+  */
+// クラスと同じ名前のオブジェクトを同一ファイル・同一パッケージ内に宣言することで `コンパニオンオブジェクト` となる
+// 主にクラスに静的メソッドを定義する場合に用いる（ Scala には static キーワードがない = クラスに静的メソッドを定義できない）
+object Polygon {
+  /**
+    * 辺の数に応じた多角形を生成して返す
+    *
+    * @param edges 各辺の長さのリスト
+    * @return 多角形
+    */
+  def fromEdges(edges: List[Int]): Polygon = {
+    edges.length match {
+      case 3 => new Triangle(edges)
+      case 4 => new Square(edges)
+      case _ => ??? // `???` の実態は `NotImplementedError` 。未実装を表すことができる
+      // 変数 `_` は利用しない値を受け取る場合に用いる。この変数を参照することはできない
+    }
+  }
 }
 
 /**
