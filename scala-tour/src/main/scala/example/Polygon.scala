@@ -6,6 +6,9 @@ object PolygonMain {
     val square = Polygon.fromEdges(List(3, 13, 13, 14))
     println(triangle.area)
     println(square.area)
+
+    val greenTriangle = new ColoredTriangle(List(6, 8, 10))
+    println(s"R: ${greenTriangle.R} G: ${greenTriangle.G} B: ${greenTriangle.B}")
   }
 }
 
@@ -78,3 +81,33 @@ class Square(edges: List[Int]) extends Polygon(edges) {
     math.sqrt((s - a) * (s - b) * (s - c) * (s - b))
   }
 }
+
+/**
+  * 色を表す trait
+  */
+trait Color {
+  val R: Int
+  val G: Int
+  val B: Int
+}
+
+trait Red extends Color {
+  override val R = 255
+  override val G = 0
+  override val B = 0
+}
+
+trait Green extends Color {
+  override val R = 0
+  override val G = 255
+  override val B = 0
+}
+
+/**
+  * 色が塗られた三角形を表す
+  */
+// trait は継承できる。2つ目以降は with を用いる
+// trait の多重継承のことを mixin と呼ぶ
+class ColoredTriangle(edges: List[Int])
+  extends Triangle(edges) with Red with Green // 継承は後勝ちなので Green が有効
+
