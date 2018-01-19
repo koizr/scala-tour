@@ -11,6 +11,11 @@ object GenericsMain {
 
     // Box[Int].push(newElement: Int) に String を入れようとしてるので type mismatch が発生する
     // intBox.push("string")
+
+    val personBox = new PersonBox[Person]
+    val childBox = new PersonBox[Child]
+    // T <: Person なので Parent はダメ
+    // val parentBox = new PersonBox[Parent]
   }
 }
 
@@ -21,3 +26,14 @@ class Box[T](var element: T) {
     element = newElement
   }
 }
+
+// 型パラメータの親子関係を指定することもできる
+// T <: A で、A か A の子クラスのみ
+// T >: A で、A か A の親クラスのみ
+class PersonBox[T <: Person]
+
+class Parent
+
+class Person extends Parent
+
+class Child extends Person
