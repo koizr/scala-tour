@@ -9,6 +9,7 @@ object CollectionMain {
     set()
     map()
     tuple()
+    collectionMethods()
   }
 
   def string(): Unit = {
@@ -128,5 +129,44 @@ object CollectionMain {
 
     // タプルのリストはマップに変換できる
     val map = List((1, "a"), (2, "b")).toMap
+  }
+
+  /**
+    * コレクションのよく使うメソッドまとめ
+    */
+  def collectionMethods(): Unit = {
+    // map
+    val list1 = List(1, 2, 3, 4, 5)
+    val list2 = list1.map(i => i * 3)
+    p("map:", list2)
+
+    // foreach
+    list1.foreach(i => println(i))
+
+    // filter
+    p("filter:", list1.filter(i => i % 2 == 0))
+
+    // count
+    p("count:", list1.count(i => i % 2 == 0))
+    // 条件がないときは size
+    p("size:", list1.size)
+
+    // contains
+    p("contians:", list1.contains(3))
+
+    // 連結
+    p("connect:", list1 ++ list2)
+
+    // 文字列にする
+    list1.mkString // 全要素をただ繋げただけ
+    list1.mkString(",") // カンマ区切り
+    list1.mkString("[", ",", "]") // [1,2,3,4,5]
+  }
+
+  def p(label: String, item: Any): Unit = {
+    item match {
+      case x: List[Any] => println(label + x.mkString(", "))
+      case _ => println(label + item)
+    }
   }
 }
