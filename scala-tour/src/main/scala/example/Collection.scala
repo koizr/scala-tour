@@ -78,7 +78,7 @@ object CollectionMain {
 
     // `::` はケースクラスでもある。 => どういうこと？
     val list6 = List(2, 3, 4, 5) match {
-        // head には 先頭の要素、tail にはその後ろの要素が来る
+      // head には 先頭の要素、tail にはその後ろの要素が来る
       case head :: tail if head % 2 == 0 =>
         (head * 5) :: tail
       case head :: tail =>
@@ -93,16 +93,16 @@ object CollectionMain {
     */
   def set(): Unit = {
     // 初期化。勝手に重複が排除される
-    val set1 = Set(0,0,0)
+    val set1 = Set(0, 0, 0)
 
     // List から Set に変換。重複が排除される
-    val set2 = List(1,2,2).toSet
+    val set2 = List(1, 2, 2).toSet
   }
 
   /**
     * Map はキーとそれに紐付いた値からなるデータの集まりを表す
     */
-  def map(): Unit ={
+  def map(): Unit = {
     // (key, value) のタプルを渡す
     val map1 = Map((1, "a"), (2, "b"))
 
@@ -116,7 +116,7 @@ object CollectionMain {
     * Tuple は複数の値の組を表す
     * 不変なので再代入できない
     */
-  def tuple(): Unit ={
+  def tuple(): Unit = {
     // 値を () で括って初期化
     val tuple1 = (1, "a")
 
