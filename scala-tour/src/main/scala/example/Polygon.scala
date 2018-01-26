@@ -3,9 +3,21 @@ package example
 object PolygonMain {
   def main(args: Array[String]): Unit = {
     val triangle = Polygon.fromEdges(List(3, 4, 5))
-    val square = Polygon.fromEdges(List(3, 13, 13, 14))
-    println(triangle.area)
-    println(square.area)
+    triangle match {
+      case Some(t) => println(t.n)
+      case None => println("None")
+    }
+    // `Some[T]` は `T` のインスタンスをひとつだけもったコレクションのように振る舞う
+    triangle.foreach(t => println(t.n))
+
+    val errorPolygon = Polygon.fromEdges(List(1, 1, 1, 1, 1, 1))
+    errorPolygon match {
+      case Some(p) => println(p.n)
+      case None => println("error polygon is None")
+    }
+    // `None` は長さ 0 のコレクションのように振る舞う
+    // 長さ 0 なので何も出力されない
+    errorPolygon.foreach(p => println(p.n))
 
     val greenTriangle = new ColoredTriangle(List(6, 8, 10))
     println(s"R: ${greenTriangle.R} G: ${greenTriangle.G} B: ${greenTriangle.B}")
@@ -37,11 +49,14 @@ object Polygon {
     * @param edges 各辺の長さのリスト
     * @return 多角形
     */
-  def fromEdges(edges: List[Int]): Polygon = {
+  def fromEdges(edges: List[Int]): Option[Polygon] = {
+    // Some, None は Option のサブクラス
+    // Some は値があることを、 None は値がないことを表す
     edges.length match {
-      case 3 => new Triangle(edges)
-      case 4 => new Square(edges)
-      case _ => ??? // `???` の実態は `NotImplementedError` 。未実装を表すことができる
+      case 3 => Triangle.fromEdges(edges)
+      case 4 => Square.fromEdges(edges)
+      case _ => None
+      // case _ => ??? // `???` の実態は `NotImplementedError` 。未実装を表すことができる
       // 変数 `_` は利用しない値を受け取る場合に用いる。この変数を参照することはできない
     }
   }
@@ -53,7 +68,8 @@ object Polygon {
   * @param edges 各辺の長さのリスト
   */
 // 継承は extends キーワードをつけて行う。このときにコンストラクタ引数も忘れず渡す
-class Triangle(edges: List[Int]) extends Polygon(edges) {
+// コンストラクタのアクセス修飾子をつけられる
+class Triangle protected(edges: List[Int]) extends Polygon(edges) {
   val a = edges(0)
   val b = edges(1)
   val c = edges(2)
@@ -64,12 +80,31 @@ class Triangle(edges: List[Int]) extends Polygon(edges) {
   }
 }
 
+object Triangle {
+  /**
+    * 辺の数と図形としての整合性が正しければ Triangle を生成して返す
+    *
+    * @param edges
+    * @return
+    */
+  def fromEdges(edges: List[Int]): Option[Triangle] = {
+    if (edges.length == 3
+      && edges(0) + edges(1) > edges(2)
+      && edges(1) + edges(2) > edges(0)
+      && edges(0) + edges(2) > edges(1)) {
+      Some(new Triangle(edges))
+    } else {
+      None
+    }
+  }
+}
+
 /**
   * 四角形を表すクラス
   *
   * @param edges 各辺の長さのリスト
   */
-class Square(edges: List[Int]) extends Polygon(edges) {
+class Square private(edges: List[Int]) extends Polygon(edges) {
   val a = edges(0)
   val b = edges(1)
   val c = edges(2)
@@ -79,6 +114,18 @@ class Square(edges: List[Int]) extends Polygon(edges) {
     val s = (a + b + c + d) / 2.0
     // 対角の和が 180 度であると過程
     math.sqrt((s - a) * (s - b) * (s - c) * (s - b))
+  }
+}
+
+object Square {
+  def fromEdges(edges: List[Int]): Option[Square] = {
+    if (edges.length == 4
+      && edges(2) - edges(1) - edges(0) < edges(3)
+      && edges(3) < edges(2) + edges(1) + edges(0)) {
+      Some(new Square(edges))
+    } else {
+      None
+    }
   }
 }
 
