@@ -4,19 +4,25 @@ object PolygonMain {
   def main(args: Array[String]): Unit = {
     val triangle = Polygon.fromEdges(List(3, 4, 5))
     triangle match {
-      case Some(t) => println(t.n)
-      case None => println("None")
+      case Right(t) => println(t.area)
+      case Left(e) => println(e)
+      //      case Some(t) => println(t.n)
+      //      case None => println("None")
     }
     // `Some[T]` は `T` のインスタンスをひとつだけもったコレクションのように振る舞う
+    // Right も同じ
     triangle.foreach(t => println(t.n))
 
     val errorPolygon = Polygon.fromEdges(List(1, 1, 1, 1, 1, 1))
     errorPolygon match {
-      case Some(p) => println(p.n)
-      case None => println("error polygon is None")
+      case Right(t) => println(t.area)
+      case Left(e) => println(e)
+      //      case Some(p) => println(p.n)
+      //      case None => println("error polygon is None")
     }
     // `None` は長さ 0 のコレクションのように振る舞う
     // 長さ 0 なので何も出力されない
+    // Left も同じ
     errorPolygon.foreach(p => println(p.n))
 
     val greenTriangle = new ColoredTriangle(List(6, 8, 10))
@@ -49,13 +55,17 @@ object Polygon {
     * @param edges 各辺の長さのリスト
     * @return 多角形
     */
-  def fromEdges(edges: List[Int]): Option[Polygon] = {
+  def fromEdges(edges: List[Int]): Either[String, Polygon] = {
+    // Either[L, R] は L 型の値を一つ持つ Left[L, R] または R 型の値を一つ持つ Right[L, R] のどちらかを表す
+    // 一般的に Right を正常値として扱う事が多い。
+
     // Some, None は Option のサブクラス
     // Some は値があることを、 None は値がないことを表す
     edges.length match {
       case 3 => Triangle.fromEdges(edges)
       case 4 => Square.fromEdges(edges)
-      case _ => None
+      case _ => Left(s"Polygon that has ${edges.length} edges is not implemented.")
+      // case _ => None
       // case _ => ??? // `???` の実態は `NotImplementedError` 。未実装を表すことができる
       // 変数 `_` は利用しない値を受け取る場合に用いる。この変数を参照することはできない
     }
@@ -87,14 +97,15 @@ object Triangle {
     * @param edges
     * @return
     */
-  def fromEdges(edges: List[Int]): Option[Triangle] = {
-    if (edges.length == 3
-      && edges(0) + edges(1) > edges(2)
+  def fromEdges(edges: List[Int]): Either[String, Triangle] = {
+    if (edges.length != 3) {
+      Left(s"Cannot create Triangle by ${edges.length} edges.")
+    } else if (!(edges(0) + edges(1) > edges(2)
       && edges(1) + edges(2) > edges(0)
-      && edges(0) + edges(2) > edges(1)) {
-      Some(new Triangle(edges))
+      && edges(0) + edges(2) > edges(1))) {
+      Left("lengths of edges is bad combination.")
     } else {
-      None
+      Right(new Triangle(edges))
     }
   }
 }
@@ -118,13 +129,15 @@ class Square private(edges: List[Int]) extends Polygon(edges) {
 }
 
 object Square {
-  def fromEdges(edges: List[Int]): Option[Square] = {
-    if (edges.length == 4
-      && edges(2) - edges(1) - edges(0) < edges(3)
-      && edges(3) < edges(2) + edges(1) + edges(0)) {
-      Some(new Square(edges))
+  def fromEdges(edges: List[Int]): Either[String, Square] = {
+    if (edges.length != 4) {
+      Left(s"Cannot create Triangle by ${edges.length} edges.")
+    }
+    if (!(edges(2) - edges(1) - edges(0) < edges(3)
+      && edges(3) < edges(2) + edges(1) + edges(0))) {
+      Left("lengths of edges is bad combination.")
     } else {
-      None
+      Right(new Square(edges))
     }
   }
 }
