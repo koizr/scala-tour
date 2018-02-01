@@ -2,6 +2,8 @@ package example
 
 // 小文字の future も存在するが非推奨
 import scala.concurrent.Future
+// スレッドプールに関する設定を行っている
+// Future の implicit 引数に渡されてる
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Success
 import scala.util.Failure
